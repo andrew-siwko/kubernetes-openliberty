@@ -42,7 +42,7 @@ pipeline {
                 // Always apply the manifests first so Service or ConfigMap changes take effect
                 sh "kubectl apply -f deployment.yaml"
                 // Then update the image to the exact build tag
-                sh "kubectl set image deployment/${DEPLOYMENT_NAME} app-container=${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG}"
+                sh "kubectl set image deployment/${DEPLOYMENT_NAME} openliberty-container=${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG}"
             }
         }       
 

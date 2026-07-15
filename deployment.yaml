@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: openliberty-app
+  name: openliberty-test
   namespace: default
   labels:
-    app: openliberty-app
+    app: openliberty-test
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: openliberty-app
+      app: openliberty-test
   template:
     metadata:
       labels:
-        app: openliberty-app
+        app: openliberty-test
     spec:
       containers:
       - name: openliberty-container
-        image: your-registry/your-app:latest
+        image: kregistry.siwko.org:5000/openliberty-test:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -61,7 +61,7 @@ metadata:
   namespace: default
 spec:
   selector:
-    app: openliberty-app
+    app: openliberty-test
   ports:
   - protocol: TCP
     port: 9080

@@ -20,5 +20,7 @@
                   httpsPort="9443" />
 
     <webContainer deferServletLoad="false"/>
-
+    <remoteFileAccess>
+        <writeDir>${server.config.dir}</writeDir>
+    </remoteFileAccess>
 </server>

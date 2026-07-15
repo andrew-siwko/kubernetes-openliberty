@@ -60,11 +60,17 @@ metadata:
   name: openliberty-service
   namespace: default
 spec:
+  type: NodePort  # Changed from ClusterIP
   selector:
     app: openliberty-test
   ports:
   - protocol: TCP
+    port: 9443
+    targetPort: 9443
+    nodePort: 30443  # Exposes HTTPS on port 30443 of every cluster node
+    name: https
+  - protocol: TCP
     port: 9080
     targetPort: 9080
+    nodePort: 30080  # Exposes HTTP on port 30080 of every cluster node
     name: http
-  type: ClusterIP

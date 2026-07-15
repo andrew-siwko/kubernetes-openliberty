@@ -10,7 +10,8 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Package the application into Open Liberty
-FROM openliberty/open-liberty:kernel-java17-openj9
+#FROM openliberty/open-liberty:kernel-java17-openj9
+FROM icr.io/appcafe/open-liberty:kernel-java17-openj9-ubi
 
 # Copy your server configuration (server.xml)
 COPY --chown=1001:0 src/main/liberty/config/server.xml /config/

@@ -6,7 +6,7 @@ pipeline {
         REGISTRY_DOMAIN = 'kregistry.siwko.org:5000'
         IMAGE_NAME      = 'openliberty'
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
-        DEPLOYMENT_NAME = 'openliberty-deployment'
+        DEPLOYMENT_NAME = 'openliberty-test'
     }
 
     stages {

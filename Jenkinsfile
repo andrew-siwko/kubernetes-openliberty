@@ -17,6 +17,13 @@ pipeline {
             }
         }
 
+        stage('Compile & Test (Local)') {
+            steps {
+                // Ensure Maven is available on your Jenkins agent. 
+                // Alternatively, you can rely entirely on the Dockerfile build step.
+                sh 'mvn clean test'
+            }
+        }
         stage('Build Docker Image') {
             steps {
                 echo "Building image: ${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG}..."

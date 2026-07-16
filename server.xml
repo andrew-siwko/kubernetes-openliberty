@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<server description="Open Liberty Server with Admin Center">
+<server description="Open Liberty Server with Admin Center and Kubernetes Node API Server">
 
     <featureManager>
         <feature>servlet-6.0</feature>
@@ -23,4 +23,17 @@
     <remoteFileAccess>
         <writeDir>${server.config.dir}</writeDir>
     </remoteFileAccess>
+    <featureManager>
+        <feature>restfulWS-3.1</feature>
+    </featureManager>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="8080" /> <!-- Liberty's default port -->
+
+    <!-- Deploys your compiled .war package -->
+    <webApplication location="k8s-node-viewer.war" contextRoot="/" />
+
 </server>
+
+

@@ -4,6 +4,7 @@
     <featureManager>
         <feature>servlet-6.0</feature>
         <feature>mpHealth-4.0</feature>
+        <feature>restfulWS-3.1</feature>
         <!-- 1. Enable the Admin Center web console -->
         <feature>adminCenter-1.0</feature>
     </featureManager>
@@ -23,17 +24,9 @@
     <remoteFileAccess>
         <writeDir>${server.config.dir}</writeDir>
     </remoteFileAccess>
-    <featureManager>
-        <feature>restfulWS-3.1</feature>
-    </featureManager>
-
-    <httpEndpoint id="defaultHttpEndpoint"
-                  host="*"
-                  httpPort="8080" /> <!-- Liberty's default port -->
 
     <!-- Deploys your compiled .war package -->
     <webApplication location="k8s-node-viewer.war" contextRoot="/" />
 
 </server>
-
 

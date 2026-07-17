@@ -18,8 +18,8 @@ COPY --chown=1001:0 server.xml /config/
 # Pre-install the Liberty features defined in your server.xml to optimize container startup time
 RUN features.sh
 
-# Copy the built .war file from the builder stage (server.xml declares it explicitly, so it belongs in /config, not dropins)
-COPY --chown=1001:0 --from=builder /build/target/*.war /config/
+# Copy the built .war file from the builder stage into apps/, where a relative <webApplication location="..."/> resolves
+COPY --chown=1001:0 --from=builder /build/target/*.war /config/apps/
 
 # Run a preliminary startup check to populate the shared class cache
 RUN configure.sh

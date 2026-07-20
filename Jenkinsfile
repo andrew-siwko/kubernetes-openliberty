@@ -33,6 +33,30 @@ pipeline {
             }
         }
 
+        stage('Build & Push Multi-Arch Image') {
+            steps {
+                echo "Building & pushing multi-arch image: ${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG}..."
+                // Cluster has both amd64 (RHEL) and arm64 (Orange Pi) nodes, so the image
+                // manifest must cover both platforms. Multi-platform images can't be
+                // docker-loaded locally, so build and push happen in one buildx step.
+                // Reuse the builder across runs (preserves BuildKit's layer cache and avoids
+                // tearing down a builder another concurrent job may be using); only create
+                // it if missing. The docker-container driver runs BuildKit in its own
+                // container, isolated from the host daemon.json insecure-registries setting,
+                // so it needs its own config -- baked in once via a fixed host path, not the
+                // repo, so any project's Jenkinsfile can reuse the same line.
+                sh "docker buildx inspect multiarch-builder >/dev/null 2>&1 || docker buildx create --name multiarch-builder --driver docker-container --config /etc/buildkit/buildkitd.toml --bootstrap"
+                sh "docker buildx use multiarch-builder"
+                sh """
+                    docker buildx build \
+                      --platform linux/amd64,linux/arm64 \
+                      -t ${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG} \
+                      -t ${REGISTRY_DOMAIN}/${IMAGE_NAME}:latest \
+                      --push .
+                """
+            }
+        }
+
         stage('Push to Local Registry') {
             steps {
                 echo "Pushing images to local registry..."

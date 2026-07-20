@@ -24,15 +24,6 @@ pipeline {
                 sh 'mvn clean test'
             }
         }
-        stage('Build Docker Image') {
-            steps {
-                echo "Building image: ${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG}..."
-                // Build the image locally on the RHEL 10 agent
-                sh "docker build -t ${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG} ."
-                sh "docker tag ${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG} ${REGISTRY_DOMAIN}/${IMAGE_NAME}:latest"
-            }
-        }
-
         stage('Build & Push Multi-Arch Image') {
             steps {
                 echo "Building & pushing multi-arch image: ${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG}..."
@@ -54,16 +45,6 @@ pipeline {
                       -t ${REGISTRY_DOMAIN}/${IMAGE_NAME}:latest \
                       --push .
                 """
-            }
-        }
-
-        stage('Push to Local Registry') {
-            steps {
-                echo "Pushing images to local registry..."
-                // Since this agent runs on the registry host, we push directly to localhost
-                // without encountering external TLS or network routing issues
-                sh "docker push ${REGISTRY_DOMAIN}/${IMAGE_NAME}:${IMAGE_TAG}"
-                sh "docker push ${REGISTRY_DOMAIN}/${IMAGE_NAME}:latest"
             }
         }
 

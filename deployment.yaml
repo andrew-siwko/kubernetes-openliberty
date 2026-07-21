@@ -34,7 +34,7 @@ metadata:
   labels:
     app: openliberty-test
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: openliberty-test
@@ -44,6 +44,11 @@ spec:
         app: openliberty-test
     spec:
       serviceAccountName: openliberty-test
+      # Liberty/OpenJ9 startup is too slow on the orangepizero3 SBC to pass the
+      # liveness/readiness probes below (tuned for the amd64 RHEL nodes), causing
+      # a permanent CrashLoopBackOff there.
+      nodeSelector:
+        kubernetes.io/arch: amd64
       containers:
       - name: openliberty-container
         image: kregistry.siwko.org:5000/openliberty-test:latest
@@ -57,7 +62,7 @@ spec:
         # Open Liberty is very efficient, but setting limits ensures cluster stability
         resources:
           limits:
-            cpu: "1"
+            cpu: "2"
             memory: 512Mi
           requests:
             cpu: "250m"

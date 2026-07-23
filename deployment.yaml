@@ -34,7 +34,7 @@ metadata:
   labels:
     app: openliberty-test
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: openliberty-test

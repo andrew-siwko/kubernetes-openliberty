@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 # Stage 1: Build the Java application using Maven
 FROM maven:3.9-eclipse-temurin-17 AS builder
 WORKDIR /build
@@ -6,8 +8,10 @@ WORKDIR /build
 COPY pom.xml .
 COPY src ./src
 
-# Package the application (skipping tests for a quicker build)
-RUN mvn clean package -DskipTests
+# Package the application (skipping tests for a quicker build).
+# Cache the local repo across builds so unrelated source changes don't force
+# every dependency to be re-downloaded (the builder container is reused, see Jenkinsfile).
+RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests
 
 # Stage 2: Package the application into Open Liberty
 FROM icr.io/appcafe/open-liberty:kernel-slim-java21-openj9-ubi-minimal

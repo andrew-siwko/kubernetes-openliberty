@@ -23,6 +23,9 @@ public class NodeResource {
         StringBuilder response = new StringBuilder();
         response.append("Hello! Your Java app is running inside Kubernetes on Open Liberty!\n");
 
+        String currentNode = System.getenv("NODE_NAME");
+        response.append("Running on node: ").append(currentNode != null ? currentNode : "unknown").append("\n");
+
         try {
             // Automatically falls back to in-cluster config when in a pod
             ApiClient client = Config.defaultClient();

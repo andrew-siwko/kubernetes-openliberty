@@ -58,7 +58,13 @@ spec:
           name: http
         - containerPort: 9443
           name: https
-        
+
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+
         # Open Liberty is very efficient, but setting limits ensures cluster stability
         resources:
           limits:

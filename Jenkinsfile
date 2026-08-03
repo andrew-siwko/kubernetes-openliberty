@@ -1,6 +1,10 @@
 pipeline {
     agent { label 'docker-builder' }
 
+    options {
+        disableConcurrentBuilds()
+    }
+
     environment {
         // Use the domain name your K8s cluster uses to resolve the registry
         REGISTRY_DOMAIN = 'kregistry.siwko.org:5000'

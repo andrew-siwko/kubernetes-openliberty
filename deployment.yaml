@@ -74,19 +74,27 @@ spec:
             cpu: "250m"
             memory: 256Mi
         
-        # Probes leverage Liberty's built-in MicroProfile Health endpoints
+        # Probes leverage Liberty's built-in MicroProfile Health endpoints.
+        # timeoutSeconds was left unset (defaults to Kubernetes' 1s minimum)
+        # -- confirmed live on 2026-08-03 that this is too tight: this pod
+        # flapped (clean startup immediately followed by a probe-triggered
+        # kill) in step with www-siwko-liberty and qha-admin-console, both of
+        # which had the exact same unset-timeout bug, during a brief cluster
+        # networking/Postgres disruption.
         livenessProbe:
           httpGet:
             path: /health/live
             port: 9080
           initialDelaySeconds: 30
           periodSeconds: 15
+          timeoutSeconds: 5
         readinessProbe:
           httpGet:
             path: /health/ready
             port: 9080
           initialDelaySeconds: 15
           periodSeconds: 10
+          timeoutSeconds: 5
         
         # Security best practices
         securityContext:

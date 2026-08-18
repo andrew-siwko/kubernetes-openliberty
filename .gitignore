@@ -1,1 +1,3 @@
-target/classes/org/siwko/kubernetes/NodeResource.class
+target/
+**/*.class
+

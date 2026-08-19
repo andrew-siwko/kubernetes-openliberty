@@ -24,8 +24,19 @@ pipeline {
         }
 
         stage('Compile & Test (Local)') {
+            environment {
+                // kregistry's system default java/javac is still JDK 21 (the
+                // java-25-openjdk-devel package was installed alongside it,
+                // not swapped in via alternatives, since kregistry also runs
+                // the container registry and other things may depend on the
+                // existing default). Pin just this stage to JDK 25 so it
+                // matches the pom.xml release target and the Dockerfile's
+                // build stage, without changing the host-wide default.
+                JAVA_HOME = '/usr/lib/jvm/java-25-openjdk'
+                PATH = "${JAVA_HOME}/bin:${env.PATH}"
+            }
             steps {
-                // Ensure Maven is available on your Jenkins agent. 
+                // Ensure Maven is available on your Jenkins agent.
                 // Alternatively, you can rely entirely on the Dockerfile build step.
                 sh 'mvn clean test'
             }

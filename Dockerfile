@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Stage 1: Build the Java application using Maven
-FROM maven:3.9-eclipse-temurin-17 AS builder
+FROM maven:3.9-eclipse-temurin-25 AS builder
 WORKDIR /build
 
 # Copy the pom.xml and source code
@@ -14,7 +14,7 @@ COPY src ./src
 RUN --mount=type=cache,target=/root/.m2 mvn clean package -DskipTests
 
 # Stage 2: Package the application into Open Liberty
-FROM icr.io/appcafe/open-liberty:kernel-slim-java21-openj9-ubi-minimal
+FROM icr.io/appcafe/open-liberty:kernel-slim-java25-openj9-ubi-minimal
 
 # Copy your server configuration (server.xml)
 COPY --chown=1001:0 server.xml /config/

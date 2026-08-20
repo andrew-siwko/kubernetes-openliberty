@@ -25,5 +25,16 @@ RUN features.sh
 # Copy the built .war file from the builder stage into apps/, where a relative <webApplication location="..."/> resolves
 COPY --chown=1001:0 --from=builder /build/target/*.war /config/apps/
 
-# Run a preliminary startup check to populate the shared class cache
-RUN configure.sh
+# Run a preliminary startup check to populate the shared class cache.
+# Skipped when cross-building (Jenkinsfile's buildx run targets both amd64
+# and arm64 from an amd64 builder, so the arm64 leg runs under QEMU
+# user-mode emulation) -- confirmed live, OpenJ9's persistent shared class
+# cache relies on mmap/shared-memory semantics QEMU doesn't emulate
+# reliably, and configure.sh (which actually starts/stops the server to
+# populate it, unlike features.sh above) crashes with exit code 21 after
+# ~200s under emulation. It's a startup-time optimization, not required for
+# correctness -- Liberty just builds the cache lazily on first real start
+# instead, same as it already does non-emulated on amd64.
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+RUN if [ "$TARGETPLATFORM" = "$BUILDPLATFORM" ]; then configure.sh; fi
